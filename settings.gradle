@@ -1,0 +1,3 @@
+rootProject.name = 'translator-excel-spreadsheet'
+include 'api'
+include 'sample-impl'
