@@ -229,7 +229,7 @@ public class DataNode {
             lookup = "management";
           }
           if (! this.references().contains(var)) {
-            if (var.endsWith("DAT") || var.endsWith("DATE")) {
+            if (var.endsWith("dat") || var.endsWith("date")) {
             } else {
               LOG.info("Wanting to add {} because of {}", lookup, var);
               if (!determinator.contains(lookup)) {

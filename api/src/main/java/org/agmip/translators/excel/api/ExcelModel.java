@@ -60,8 +60,8 @@ public class ExcelModel {
     List<String> defined = new ArrayList<>();
     for (DataNode n: graph.unassigned()) {
       for (String v: n.variables()) {
-        if (v.equals("DATE")) continue;
-        if (v.contains("TIME")) continue;
+        if (v.equals("date")) continue;
+        if (v.contains("time")) continue;
         if (temp.contains(v)) {
           if (! dups.contains(v)) {
             dups.add(v);
@@ -259,10 +259,10 @@ public class ExcelModel {
           mappedRoots.put(k, new AceComponent(ex.rebuildComponent()));
         } else {
           mergeComponents(mappedRoots.get(k), child);
-          String newExname = child.getValueOr("EXNAME", "") + "_" + child.getValueOr("TRTNO", "");
+          String newExname = child.getValueOr("exname", "") + "_" + child.getValueOr("trtno", "");
           LOG.info("NewEX: {}", newExname);
           if (! newExname.equals("_")) {
-            child.update("EXNAME", newExname, true, true, false);
+            child.update("exname", newExname, true, true, false);
           }
           AceExperiment e = new AceExperiment(child.getRawComponent());
           mergeExReferences(e, refs, node);
@@ -372,7 +372,7 @@ public class ExcelModel {
               for(AceComponent r: references) {
                 r.update("event", "planting", true, true, false);
                 if (r.keySet().contains("PDATE")) {
-                  r.update("DATE", r.getValue("PDATE"), true, true, false);
+                  r.update("date", r.getValue("pdate"), true, true, false);
                 }
                 AceEvent evt = new AceEvent(r.getRawComponent());
                 component.getEvents().asList().add(evt);
@@ -380,8 +380,8 @@ public class ExcelModel {
             } else {
               for(AceEvent evt: currentEvents) {
                 for(AceComponent r: references) {
-                  if (r.keySet().contains("PDATE")) {
-                    r.update("DATE", r.getValue("PDATE"), true, true, false);
+                  if (r.keySet().contains("pdate")) {
+                    r.update("date", r.getValue("pdate"), true, true, false);
                   }
                   mergeComponents(r, evt);
                 }
@@ -391,8 +391,8 @@ public class ExcelModel {
           case "management@events!irrigation":
             for(AceComponent r: references) {
               r.update("event", "irrigation", true, true, false);
-              if (r.keySet().contains("IDATE")) {
-                r.update("DATE", r.getValue("IDATE"), true, true, false);
+              if (r.keySet().contains("idate")) {
+                r.update("date", r.getValue("idate"), true, true, false);
               }
               AceEvent evt = new AceEvent(r.getRawComponent());
               component.getEvents().asList().add(evt);
@@ -401,8 +401,8 @@ public class ExcelModel {
           case "management@events!fertilizer":
             for(AceComponent r: references) {
               r.update("event", "fertilizer", true, true, false);
-              if (r.keySet().contains("FEDATE")) {
-                r.update("DATE", r.getValue("FEDATE"), true, true, false);
+              if (r.keySet().contains("fedate")) {
+                r.update("date", r.getValue("fedate"), true, true, false);
               }
               AceEvent evt = new AceEvent(r.getRawComponent());
               component.getEvents().asList().add(evt);

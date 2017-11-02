@@ -5,11 +5,11 @@ import java.util.*;
 public class Util {
 
     public static final Set<String> ROOT_FIELDS = Collections.unmodifiableSet(
-            new HashSet<>(Arrays.asList(new String[] {"SOIL_ID", "WST_ID", "EXPER_ID", "EXNAME"}))
+            new HashSet<>(Arrays.asList(new String[] {"soil_id", "wst_id", "exper_id", "exname"}))
     );
 
     public static String standardizeVariable(String v) {
-        return v.toUpperCase().replaceAll("\\s", "");
+        return v.toLowerCase().replaceAll("\\s", "");
     }
 
     public static String frontPath(String p) {
