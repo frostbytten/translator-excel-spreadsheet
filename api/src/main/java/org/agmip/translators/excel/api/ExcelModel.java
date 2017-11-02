@@ -146,6 +146,31 @@ public class ExcelModel {
           break;
       }
     }
+    // Let's try to manually fix the links for the experiments
+    Map<String, AceWeather> weatherMap = new HashMap<>();
+    Map<String, AceSoil> soilMap = new HashMap<>();
+    for(AceWeather w : ds.getWeathers()) {
+      String wstID = w.getValueOr("wst_id", "");
+      LOG.info("Found weather {}", wstID);
+      weatherMap.put(wstID, w);
+    }
+    for(AceSoil s : ds.getSoils()) {
+      String sID = s.getValueOr("soil_id", "");
+      LOG.info("Found soil {}", sID);
+      soilMap.put(sID, s);
+    }
+    for(AceExperiment e: ds.getExperiments()) {
+      String wstID = e.getValueOr("wst_id", "");
+      String sID = e.getValueOr("soil_id", "");
+      if (weatherMap.containsKey(wstID)) {
+        LOG.info("Looked up and found {}", wstID);
+        e.setWeather(weatherMap.get(wstID));
+      }
+      if (soilMap.containsKey(sID)) {
+        LOG.info("Looked up and found {}", sID);
+        e.setSoil(soilMap.get(sID));
+      }
+    }
     return ds;
   }
 
