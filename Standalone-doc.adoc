@@ -1,0 +1,15 @@
+= Excel Spreadsheet Translator Standalone + QuadUI
+Christopher Villalobos <cvillalobos@ufl.edu>
+v2.0.0, 2017-11-07
+
+== Introduction
+
+The Excel spreadsheet standalone translator is used to create ACEB files from Excel spreadsheets with ICASA headers in the sheets. The translatorautomatically looks for associations between sheets without the use of special headers. Once the ACEB has been generated, QuadUI can be used to generate DSSAT files.
+
+== Sample Use
+
+From a command-line:
+
+ java -jar sample-impl-2.0.0-SNAPSHOT-all.jar <excel file> <ACEB output>
+
+
