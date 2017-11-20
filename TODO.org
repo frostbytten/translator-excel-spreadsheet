@@ -1,0 +1,5 @@
+* 2.0.1
+** Bugs
+  - [ ] Skip roots on determining "destination" of a sheet
+  - [ ] Check why links don't work as solo (without treatment for example)
+** Features
