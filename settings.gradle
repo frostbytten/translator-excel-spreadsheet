@@ -1,3 +1,4 @@
+enableFeaturePreview("IMPROVED_POM_SUPPORT")
 rootProject.name = 'translator-excel-spreadsheet'
 include 'api'
 include 'sample-impl'

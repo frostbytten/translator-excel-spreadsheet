@@ -1,38 +1,45 @@
 plugins {
+    id 'java-library'
+    id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '2.0.0'
 }
 
 allprojects {
-  repositories {
-    jcenter()
-    mavenLocal()
-  }
+    repositories {
+        jcenter()
+        mavenCentral()
+        mavenLocal()
+    }
 }
 
 subprojects {
-  apply plugin: 'java'
-  group 'org.agmip.translators'
-  version '2.0.1'
+    group 'org.agmip.translators'
+    version '2.0.1-SNAPSHOT'
 }
 
 project(':api') {
-  dependencies {
-    compile 'org.apache.poi:poi-ooxml:3.16'
-    compile 'ch.qos.logback:logback-classic:1.2.3'
-    compile 'org.agmip.ace:ace-core:2.1.1-SNAPSHOT'
-  }
+    apply plugin: 'java-library'
+    dependencies {
+        implementation 'org.agmip.bom:agmip-bom:2.1.2'
+
+        api 'org.agmip.ace:ace-core'
+
+        implementation 'org.apache.poi:poi-ooxml:3.16'
+        implementation 'ch.qos.logback:logback-classic'
+    }
 }
 
 project(':sample-impl') {
-  apply plugin: 'application'
-  apply plugin: 'com.github.johnrengelman.shadow'
-  dependencies {
-    compile project(':api')
-  }
-  mainClassName = 'org.agmip.translators.excel.impl.sample.Main'
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'com.github.johnrengelman.shadow'
+    dependencies {
+        compile project(':api')
+    }
+    mainClassName = 'org.agmip.translators.excel.impl.sample.Main'
 }
 
 task wrapper(type: Wrapper) {
-  jarFile = '.gradlew/gradle-wrapper.jar'
-  gradleVersion = '4.7'
+    jarFile = '.gradlew/gradle-wrapper.jar'
+    gradleVersion = '4.7'
 }
