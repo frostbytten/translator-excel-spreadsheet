@@ -10,6 +10,11 @@ allprojects {
         mavenCentral()
         mavenLocal()
     }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 subprojects {
