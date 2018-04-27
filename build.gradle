@@ -34,4 +34,5 @@ project(':sample-impl') {
 
 task wrapper(type: Wrapper) {
   jarFile = '.gradlew/gradle-wrapper.jar'
+  gradleVersion = '4.7'
 }
