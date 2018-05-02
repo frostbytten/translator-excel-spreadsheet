@@ -14,6 +14,7 @@ allprojects {
     tasks.withType(JavaCompile) {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
+        options.compilerArgs << '-Xlint:all'
     }
 }
 
@@ -39,6 +40,8 @@ project(':sample-impl') {
     apply plugin: 'application'
     apply plugin: 'com.github.johnrengelman.shadow'
     dependencies {
+        compile 'org.agmip.bom:agmip-bom:2.1.2'
+        compile 'ch.qos.logback:logback-classic' //no need to make this a transitive dependency from :api
         compile project(':api')
     }
     mainClassName = 'org.agmip.translators.excel.impl.sample.Main'
