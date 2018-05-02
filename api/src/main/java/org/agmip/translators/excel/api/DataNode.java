@@ -215,7 +215,7 @@ public class DataNode {
     }
     List<String> determinator = new ArrayList<>();
     for(String var: this.variables()) {
-      if (Util.ROOT_FIELDS.contains(var) {
+      if (Util.ROOT_FIELDS.contains(var)) {
         //LOG.info("Skipping root var: {}", var);
       } else if(this.linkages().contains(var)) {
         //LOG.info("Skipping reference var: {} ", var);
