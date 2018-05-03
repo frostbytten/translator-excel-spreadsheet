@@ -1,7 +1,5 @@
 package org.agmip.translators.excel.api.handler;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.agmip.translators.excel.api.DataNode;
@@ -16,15 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 public class DataHandler extends DefaultHandler {
   private static final Logger LOG = LoggerFactory.getLogger(DataHandler.class);
   private final SharedStringsTable sst;
-  private final XSSFReader reader;
-  private final XMLReader parser;
   private boolean finished = false;
   private boolean foundRow = false;
   private boolean duplicateDataFound = false;
@@ -35,11 +29,9 @@ public class DataHandler extends DefaultHandler {
   private int colNum = 0;
   private String contents;
 
-  public DataHandler(int indexColumns, SharedStringsTable sst, XSSFReader reader) throws SAXException {
+  public DataHandler(int indexColumns, SharedStringsTable sst) throws SAXException {
     this.indexColumns = indexColumns;
     this.sst = sst;
-    this.reader = reader;
-    this.parser = XMLReaderFactory.createXMLReader();
   }
 
   @Override

@@ -12,47 +12,45 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
-import javax.xml.soap.Node;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.soap.Node;
 
 public class ExcelModel {
   public static final Logger LOG = LoggerFactory.getLogger(ExcelModel.class);
   private final OPCPackage pkg;
   private final XSSFReader reader;
   private final SharedStringsTable sst;
-  private final XMLReader parser;
+  private final SAXParser parser;
   private final RootedGraph graph;
 
   public ExcelModel(Path file) throws Exception {
     pkg = OPCPackage.open(file.toFile(), PackageAccess.READ);
     reader = new XSSFReader(pkg);
     sst = reader.getSharedStringsTable();
-    parser = XMLReaderFactory.createXMLReader();
+    parser = SAXParserFactory.newDefaultInstance().newSAXParser();
     this.graph = new RootedGraph();
   }
 
   public void init() throws Exception {
     try (InputStream wkb = reader.getWorkbookData()) {
       InputSource source = new InputSource(wkb);
-      SheetHandler handler = new SheetHandler(this.graph, this.sst, this.reader);
-      parser.setContentHandler(handler);
-      parser.parse(source);
+      SheetHandler handler = new SheetHandler(this.graph);
+      parser.parse(source, handler);
     }
     for (DataNode n: graph.unassigned()) {
       LOG.info("Node with [{}] {}", n.id(), n.name());
       try (InputStream stream = reader.getSheet(n.id())) {
-        VariableHandler vh = new VariableHandler(n, sst);
-        parser.setContentHandler(vh);
         InputSource source = new InputSource(stream);
-        parser.parse(source);
+        VariableHandler vh = new VariableHandler(n, sst);
+        parser.parse(source, vh);
       }
     }
     List<String> temp = new ArrayList<>(50);
@@ -77,10 +75,9 @@ public class ExcelModel {
       LOG.info("Node {} has {} potential index(es)", n.name(), numIndexDups(dups, n.variables()));
       try (InputStream stream = reader.getSheet(n.id())) {
         int indexColumns = numIndexDups(dups, n.variables());
-        FirstPassDataHandler fpdh = new FirstPassDataHandler(n, indexColumns, defined, sst, reader);
-        parser.setContentHandler(fpdh);
         InputSource source = new InputSource(stream);
-        parser.parse(source);
+        FirstPassDataHandler fpdh = new FirstPassDataHandler(n, indexColumns, defined, sst);
+        parser.parse(source, fpdh);
         if (n.doesDefine()) {
           String tempDefine = n.defines().get();
           String d;
@@ -431,8 +428,7 @@ public class ExcelModel {
     try (InputStream stream = reader.getSheet(node.id())) {
       InputSource source = new InputSource(stream);
       TranslationHandler th = new TranslationHandler(node, translated, this.sst);
-      this.parser.setContentHandler(th);
-      this.parser.parse(source);
+      this.parser.parse(source, th);
     } catch (InvalidFormatException e) {
       e.printStackTrace();
     } catch (IOException e) {

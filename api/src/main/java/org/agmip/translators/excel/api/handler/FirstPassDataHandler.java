@@ -1,27 +1,20 @@
 package org.agmip.translators.excel.api.handler;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.agmip.translators.excel.api.DataNode;
 import org.agmip.translators.excel.api.Util;
-import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 public class FirstPassDataHandler extends DefaultHandler {
   private static final Logger LOG = LoggerFactory.getLogger(FirstPassDataHandler.class);
   private final SharedStringsTable sst;
-  private final XSSFReader reader;
-  private final XMLReader parser;
   private boolean finished = false;
   private boolean foundRow = false;
   private boolean duplicateDataFound = false;
@@ -37,13 +30,11 @@ public class FirstPassDataHandler extends DefaultHandler {
   private StringBuilder defines;
   private List<String> defined;
 
-  public FirstPassDataHandler(DataNode node, int indexColumns, List<String> defined, SharedStringsTable sst, XSSFReader reader) throws SAXException {
+  public FirstPassDataHandler(DataNode node, int indexColumns, List<String> defined, SharedStringsTable sst) {
     this.node = node;
     this.indexColumns = indexColumns;
     this.defined = defined;
     this.sst = sst;
-    this.reader = reader;
-    this.parser = XMLReaderFactory.createXMLReader();
     this.temp = new StringBuilder();
     this.cmp = new StringBuilder();
     this.defines = new StringBuilder();

@@ -6,15 +6,8 @@ import java.util.*;
 
 import org.agmip.ace.AceDataset;
 import org.agmip.ace.lookup.LookupPath;
-import org.agmip.translators.excel.api.handler.TranslationHandler;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 public class DataNode {
   private static final Logger LOG = LoggerFactory.getLogger(DataNode.class);
@@ -27,16 +20,13 @@ public class DataNode {
   private List<String> linkages;
   private List<DataNode> children;
   private List<String> variables;
-  private XSSFReader reader;
   private boolean assigned;
   private String indexes;
-  private XMLReader parser;
   private String nodePath;
 
-  public DataNode(String id, String name, XSSFReader reader) {
+  public DataNode(String id, String name) {
     this.id = id;
     this.name = name;
-    this.reader = reader;
     this.references = new ArrayList<>();
     this.linkages = new ArrayList<>();
     this.children = new ArrayList<>();
@@ -45,19 +35,14 @@ public class DataNode {
     this.defines = Optional.empty();
     this.assigned = false;
     this.nodePath = "";
-    try {
-      this.parser = XMLReaderFactory.createXMLReader();
-    } catch (SAXException e) {
-      e.printStackTrace();
-    }
   }
 
   public DataNode(String name) {
-    this(null, name, null);
+    this(null, name);
   }
 
   public DataNode() {
-    this(null, null, null);
+    this(null, null);
   }
 
   public String name() {
