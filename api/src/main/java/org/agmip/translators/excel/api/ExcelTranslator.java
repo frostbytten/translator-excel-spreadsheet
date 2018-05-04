@@ -23,15 +23,15 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.soap.Node;
 
-public class ExcelModel {
-    public static final Logger LOG = LoggerFactory.getLogger(ExcelModel.class);
+public class ExcelTranslator {
+    public static final Logger LOG = LoggerFactory.getLogger(ExcelTranslator.class);
     private final OPCPackage pkg;
     private final XSSFReader reader;
     private final SharedStringsTable sst;
     private final SAXParser parser;
     private final RootedGraph graph;
 
-    public ExcelModel(Path file) throws Exception {
+    public ExcelTranslator(Path file) throws Exception {
         pkg = OPCPackage.open(file.toFile(), PackageAccess.READ);
         reader = new XSSFReader(pkg);
         sst = reader.getSharedStringsTable();
