@@ -9,21 +9,21 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class SheetHandler extends DefaultHandler {
-  private static final Logger LOG = LoggerFactory.getLogger(SheetHandler.class);
-  private final RootedGraph graph;
+    private static final Logger LOG = LoggerFactory.getLogger(SheetHandler.class);
+    private final RootedGraph graph;
 
-  public SheetHandler(RootedGraph graph) throws SAXException {
-    this.graph = graph;
-  }
-
-  @Override
-  public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-    if (qName.equals("sheet")) {
-      String id = attributes.getValue("r:id");
-      String name = attributes.getValue("name");
-      if (name.startsWith("DOC_")) return;
-      DataNode node = new DataNode(id, name);
-      graph.addNode(node);
+    public SheetHandler(RootedGraph graph) throws SAXException {
+        this.graph = graph;
     }
-  }
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        if (qName.equals("sheet")) {
+            String id = attributes.getValue("r:id");
+            String name = attributes.getValue("name");
+            if (name.startsWith("DOC_")) return;
+            DataNode node = new DataNode(id, name);
+            graph.addNode(node);
+        }
+    }
 }
