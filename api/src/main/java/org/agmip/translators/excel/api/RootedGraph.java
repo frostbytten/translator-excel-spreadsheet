@@ -105,10 +105,8 @@ public class RootedGraph {
 
     private void assignRoots() {
         for (DataNode n: this.unassigned) {
-            if (! n.doesDefine()) continue;
-            String currentDefinition = n.defines().get();
-            if (Util.ROOT_FIELDS.contains(currentDefinition)) {
-                LOG.info("Roots: {} is a root", n.name());
+            if (n.isRoot()) {
+                LOG.info("Assigning {} as a ROOT NODE", n.name());
                 this.roots.add(n);
                 n.assign();
             }

@@ -69,6 +69,17 @@ public class ExcelTranslator {
                 }
             }
         }
+
+        // Assign root to a sheet which contains a root but may not define it
+        temp.removeAll(dups);
+        for (DataNode n: graph.unassigned()) {
+             for (String v: n.variables()) {
+                 if (temp.contains(v) && Util.ROOT_FIELDS.contains(v)) {
+                     n.root(v);
+                 }
+             }
+        }
+
         temp.clear();
 
         for (DataNode n: graph.unassigned()) {
