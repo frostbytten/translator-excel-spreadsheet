@@ -15,6 +15,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class TranslationHandler extends DefaultHandler {
@@ -105,8 +107,17 @@ public class TranslationHandler extends DefaultHandler {
                 // Remember to do something with the DAT/DATE stuff
                 String currentVar = this.node.variables().get(currentCol);
                 if (currentVar.endsWith("date") || currentVar.endsWith("dat")) {
-                    Calendar cal = DateUtil.getJavaCalendar(Double.valueOf(contents));
-                    contents = isoFmt.format(cal.getTime());
+                    try {
+                        LocalDate date = LocalDate.parse(contents);
+                    } catch (DateTimeParseException pex) {
+                        LOG.warn("Date parsing exception: {} is not in ISO format, attempting Excel hack.", contents);
+                        try {
+                            Calendar cal = DateUtil.getJavaCalendar(Double.valueOf(contents));
+                            contents = isoFmt.format(cal.getTime());
+                        } catch (Exception ex) {
+                            LOG.error("Cannot parse date {}. This sheet will be skipped!", contents);
+                        }
+                    }
                 }
                 try {
                     this.currentTranslation.update(currentVar, contents, true, true, false);
