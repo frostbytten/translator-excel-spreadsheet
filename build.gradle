@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '2.0.0'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 allprojects {
@@ -28,25 +28,36 @@ project(':api') {
     dependencies {
         implementation 'org.agmip.bom:agmip-bom:2.1.2'
 
-        api 'org.agmip.ace:ace-core'
+        api 'org.agmip.ace:ace-core:2.1.4'  //temporarily use fixed version number until release'
 
         implementation 'org.apache.poi:poi-ooxml:3.16'
         implementation 'ch.qos.logback:logback-classic'
+    }
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                groupId 'org.agmip.translators'
+                artifactId 'translator-excel-spreadsheet'
+                version '2.0.1-SNAPSHOT'
+
+                from components.java
+            }
+        }
     }
 }
 
 project(':sample-impl') {
     apply plugin: 'java'
     apply plugin: 'application'
+    mainClassName = 'org.agmip.translators.excel.impl.sample.Main' // stupid hack to make shadowJar happy
     apply plugin: 'com.github.johnrengelman.shadow'
     dependencies {
         compile 'org.agmip.bom:agmip-bom:2.1.2'
         compile 'ch.qos.logback:logback-classic' //no need to make this a transitive dependency from :api
         compile project(':api')
     }
-    mainClassName = 'org.agmip.translators.excel.impl.sample.Main'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '4.8.1'
 }
