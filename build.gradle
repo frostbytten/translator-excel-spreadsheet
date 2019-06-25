@@ -40,7 +40,7 @@ project(':sample-impl') {
   }
   mainClassName = 'org.agmip.translators.excel.impl.sample.Main'
   run {
-	  args = ["$buildDir/resources/input/China_WH_AgMIP_all_data_V1.2.4_MetaTreat_chp_cv.xlsx", "$buildDir/resources/output/agmip.zip"]
+	  args = ["$projectDir/resources/input/China_WH_AgMIP_all_data_V1.2.4_MetaTreat_chp_cv.xlsx", "$projectDir/resources/output/agmip.zip"]
   }
 }
 
