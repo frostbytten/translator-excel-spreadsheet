@@ -1,7 +1,6 @@
 package org.agmip.translators.excel.api;
 
 import org.agmip.ace.*;
-import org.agmip.ace.util.AceFunctions;
 import org.agmip.translators.excel.api.handler.*;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -10,16 +9,12 @@ import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.SharedStringsTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import javax.xml.soap.Node;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -60,8 +55,8 @@ public class ExcelModel {
     List<String> defined = new ArrayList<>();
     for (DataNode n: graph.unassigned()) {
       for (String v: n.variables()) {
-        if (v.equals("date")) continue;
-        if (v.contains("time")) continue;
+        if (v.equals("DATE")) continue;
+        if (v.contains("TIME")) continue;
         if (temp.contains(v)) {
           if (! dups.contains(v)) {
             dups.add(v);
@@ -144,31 +139,6 @@ public class ExcelModel {
             ds.addSoil(c.getRawComponent());
           }
           break;
-      }
-    }
-    // Let's try to manually fix the links for the experiments
-    Map<String, AceWeather> weatherMap = new HashMap<>();
-    Map<String, AceSoil> soilMap = new HashMap<>();
-    for(AceWeather w : ds.getWeathers()) {
-      String wstID = w.getValueOr("wst_id", "");
-      LOG.info("Found weather {}", wstID);
-      weatherMap.put(wstID, w);
-    }
-    for(AceSoil s : ds.getSoils()) {
-      String sID = s.getValueOr("soil_id", "");
-      LOG.info("Found soil {}", sID);
-      soilMap.put(sID, s);
-    }
-    for(AceExperiment e: ds.getExperiments()) {
-      String wstID = e.getValueOr("wst_id", "");
-      String sID = e.getValueOr("soil_id", "");
-      if (weatherMap.containsKey(wstID)) {
-        LOG.info("Looked up and found {}", wstID);
-        e.setWeather(weatherMap.get(wstID));
-      }
-      if (soilMap.containsKey(sID)) {
-        LOG.info("Looked up and found {}", sID);
-        e.setSoil(soilMap.get(sID));
       }
     }
     return ds;
@@ -259,10 +229,10 @@ public class ExcelModel {
           mappedRoots.put(k, new AceComponent(ex.rebuildComponent()));
         } else {
           mergeComponents(mappedRoots.get(k), child);
-          String newExname = child.getValueOr("exname", "") + "_" + child.getValueOr("trtno", "");
+          String newExname = child.getValueOr("EXNAME", "") + "_" + child.getValueOr("TRTNO", "");
           LOG.info("NewEX: {}", newExname);
           if (! newExname.equals("_")) {
-            child.update("exname", newExname, true, true, false);
+            child.update("EXNAME", newExname, true, true, false);
           }
           AceExperiment e = new AceExperiment(child.getRawComponent());
           mergeExReferences(e, refs, node);
@@ -372,7 +342,7 @@ public class ExcelModel {
               for(AceComponent r: references) {
                 r.update("event", "planting", true, true, false);
                 if (r.keySet().contains("PDATE")) {
-                  r.update("date", r.getValue("pdate"), true, true, false);
+                  r.update("DATE", r.getValue("PDATE"), true, true, false);
                 }
                 AceEvent evt = new AceEvent(r.getRawComponent());
                 component.getEvents().asList().add(evt);
@@ -380,8 +350,8 @@ public class ExcelModel {
             } else {
               for(AceEvent evt: currentEvents) {
                 for(AceComponent r: references) {
-                  if (r.keySet().contains("pdate")) {
-                    r.update("date", r.getValue("pdate"), true, true, false);
+                  if (r.keySet().contains("PDATE")) {
+                    r.update("DATE", r.getValue("PDATE"), true, true, false);
                   }
                   mergeComponents(r, evt);
                 }
@@ -391,8 +361,8 @@ public class ExcelModel {
           case "management@events!irrigation":
             for(AceComponent r: references) {
               r.update("event", "irrigation", true, true, false);
-              if (r.keySet().contains("idate")) {
-                r.update("date", r.getValue("idate"), true, true, false);
+              if (r.keySet().contains("IDATE")) {
+                r.update("DATE", r.getValue("IDATE"), true, true, false);
               }
               AceEvent evt = new AceEvent(r.getRawComponent());
               component.getEvents().asList().add(evt);
@@ -401,8 +371,8 @@ public class ExcelModel {
           case "management@events!fertilizer":
             for(AceComponent r: references) {
               r.update("event", "fertilizer", true, true, false);
-              if (r.keySet().contains("fedate")) {
-                r.update("date", r.getValue("fedate"), true, true, false);
+              if (r.keySet().contains("FEDATE")) {
+                r.update("DATE", r.getValue("FEDATE"), true, true, false);
               }
               AceEvent evt = new AceEvent(r.getRawComponent());
               component.getEvents().asList().add(evt);
@@ -486,6 +456,7 @@ public class ExcelModel {
     }
     return refKey.substring(0,refKey.length()-1);
   }
+  
   
   private void addEvent(AceExperiment e, AceComponent c) throws IOException {
     AceEvent evt = new AceEvent(c.getRawComponent());

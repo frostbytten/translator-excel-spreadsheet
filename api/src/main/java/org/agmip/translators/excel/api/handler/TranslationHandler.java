@@ -105,7 +105,7 @@ public class TranslationHandler extends DefaultHandler {
                 //Do something with the column data
                 // Remember to do something with the DAT/DATE stuff
                 String currentVar = this.node.variables().get(currentCol);
-                if (currentVar.endsWith("date") || currentVar.endsWith("dat")) {
+                if (currentVar.endsWith("DATE") || currentVar.endsWith("DAT")) {
                     Calendar cal = DateUtil.getJavaCalendar(Double.valueOf(contents));
                     contents = isoFmt.format(cal.getTime());
                 }
